@@ -7,6 +7,8 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import org.apache.commons.io.FileUtils;
 import org.json.*;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -17,34 +19,47 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/*
+ * YARSS(Yet Another Random Ship Selector)
+ * Created by Stephen Wallace using the org.json and commons-io-2.6 libraries
+ * Latest update: 18/04/2019
+ */
+
 @SuppressWarnings({ "serial", "unused" })
 public class RSSAddShip extends JDialog {
 	private JTextField textFieldName;
 	private JComboBox<String> comboBoxTier;
 	private JComboBox<String> comboBoxType;
 	private JComboBox<String> comboBoxNation;
-	private JSONObject ship = new JSONObject();
-	private JSONArray ships = new JSONArray();
+    private JSONArray ships;
 	
-	public void display() {
+    /*
+     * Makes the add ships menu appear
+     */
+	public void display() throws IOException {
 		setVisible(true);
 	}
 	
 	/*
 	 * Add ship function
 	 */
-	public void addship() {
-		ship.put("Name:", textFieldName.getText());
-		ship.put("Tier:", comboBoxTier.getSelectedItem());
-		ship.put("Type:", comboBoxType.getSelectedItem());
-		ship.put("Nation:", comboBoxNation.getSelectedItem());
+	private void addship() throws IOException {
+		getShips();
+		JSONObject ship = new JSONObject();
+		ship.put("Name", textFieldName.getText());
+		ship.put("Tier", comboBoxTier.getSelectedItem());
+		ship.put("Type", comboBoxType.getSelectedItem());
+		ship.put("Nation", comboBoxNation.getSelectedItem());
 		ships.put(ship);
 		output();
 	}
 	
-	public void output() {
+	/*
+	 * Writes to the JSON file
+	 */
+	private void output() {
 		try {
-			File file = new File("C:\\Users\\559735\\Downloads\\Ships.json");
+			File file = new File("Ships.json");
 			FileWriter writeFile = new FileWriter(file);
 			writeFile.write(ships.toString());
 			writeFile.flush();
@@ -52,7 +67,15 @@ public class RSSAddShip extends JDialog {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+	}
+	
+	/*
+	 * Reads from the JSON file
+	 */
+	private void getShips() throws IOException {
+		File file = new File("Ships.json");
+		String content = FileUtils.readFileToString(file, "utf-8");
+		ships = new JSONArray(content);
 	}
 	
 	/**
@@ -125,7 +148,12 @@ public class RSSAddShip extends JDialog {
 		btnAddShip.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				addship();
+				try {
+					addship();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		btnAddShip.setBounds(100, 140, 89, 23);
