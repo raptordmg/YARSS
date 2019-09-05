@@ -11,6 +11,7 @@ import javax.swing.border.EmptyBorder;
 import org.apache.commons.io.FileUtils;
 import org.json.*;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import java.awt.event.MouseAdapter;
@@ -19,81 +20,77 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-/*
- * YARSS(Yet Another Random Ship Selector)
- * Created by Stephen Wallace using the org.json and commons-io-2.6 libraries
- * Latest update: 18/04/2019
- */
-
 @SuppressWarnings({ "serial", "unused" })
 public class RSSAddShip extends JDialog {
-	private JTextField textFieldName;
+	private JTextField shipName;
 	private JComboBox<String> comboBoxTier;
 	private JComboBox<String> comboBoxType;
 	private JComboBox<String> comboBoxNation;
-    private JSONArray ships;
+    private JSONArray ships; //Initialises a JSONArray
 	
+    
     /*
-     * Makes the add ships menu appear
+     * Makes the addships window appear
      */
 	public void display() throws IOException {
-		setVisible(true);
+		setVisible(true); //Makes the addships window visible
 	}
 	
 	/*
 	 * Add ship function
 	 */
 	private void addship() throws IOException {
-		getShips();
-		JSONObject ship = new JSONObject();
-		ship.put("Name", textFieldName.getText());
+		getShips(); //Calls getships()
+		JSONObject ship = new JSONObject(); //Creates a new JSONObject
+		ship.put("Name", shipName.getText()); //Adds fields and values to a JSON
 		ship.put("Tier", comboBoxTier.getSelectedItem());
 		ship.put("Type", comboBoxType.getSelectedItem());
 		ship.put("Nation", comboBoxNation.getSelectedItem());
-		ships.put(ship);
-		output();
+		ships.put(ship); //Adds the JSONObject to the JSONArray
+		output(); //Calls output()
 	}
 	
 	/*
-	 * Writes to the JSON file
+	 * Outputs the JSON data to a file
 	 */
 	private void output() {
 		try {
-			File file = new File("Ships.json");
-			FileWriter writeFile = new FileWriter(file);
-			writeFile.write(ships.toString());
+			File file = new File("Ships.json"); //Selects the file "Ships.json"
+			FileWriter writeFile = new FileWriter(file); //Writes to the selected file
+			writeFile.write(ships.toString()); 
 			writeFile.flush();
-			writeFile.close();
+			writeFile.close(); //Closes the file
+			JOptionPane.showMessageDialog(null, "Ship added");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	/*
-	 * Reads from the JSON file
+	 * Reads the data from the Ships.json file
 	 */
 	private void getShips() throws IOException {
 		File file = new File("Ships.json");
-		String content = FileUtils.readFileToString(file, "utf-8");
-		ships = new JSONArray(content);
+		String content = FileUtils.readFileToString(file, "utf-8"); //Reads the data held by the file to a string
+		ships = new JSONArray(content); //Adds the data to the JSONArray
 	}
 	
 	/**
 	 * Create the dialog.
 	 */
 	public RSSAddShip() {
-		setTitle("Add Ships");
-		setBounds(100, 100, 234, 212);
+		setTitle("Add Ships"); //Creates the Add Ships window
+ 		setBounds(100, 100, 234, 212);
 		getContentPane().setLayout(null);
 		
 		JLabel lblShipName = new JLabel("Ship Name");
 		lblShipName.setBounds(10, 11, 76, 19);
 		getContentPane().add(lblShipName);
 		
-		textFieldName = new JTextField();
-		textFieldName.setBounds(79, 10, 86, 20);
-		getContentPane().add(textFieldName);
-		textFieldName.setColumns(10);
+		shipName = new JTextField(); //Creates a text box
+		shipName.setBounds(79, 10, 86, 20);
+		getContentPane().add(shipName);
+		shipName.setColumns(10);
 		
 		JLabel lblTier = new JLabel("Tier");
 		lblTier.setBounds(10, 43, 46, 14);
@@ -107,9 +104,9 @@ public class RSSAddShip extends JDialog {
 		lblShipNation.setBounds(10, 105, 64, 14);
 		getContentPane().add(lblShipNation);
 		
-		comboBoxTier = new JComboBox<String>();
+		comboBoxTier = new JComboBox<String>(); //Creates a combo box
 		comboBoxTier.setBounds(79, 40, 46, 20);
-		comboBoxTier.addItem("I");
+		comboBoxTier.addItem("I"); //Adds options to the combo box
 		comboBoxTier.addItem("II");
 		comboBoxTier.addItem("III");
 		comboBoxTier.addItem("IV");
@@ -141,7 +138,7 @@ public class RSSAddShip extends JDialog {
 		comboBoxNation.addItem("Pan-Asia");
 		comboBoxNation.addItem("Pan-America");
 		comboBoxNation.addItem("Commonwealth");
-		comboBoxNation.addItem("Poland");
+		comboBoxNation.addItem("Pan-EU");
 		getContentPane().add(comboBoxNation);
 		
 		JButton btnAddShip = new JButton("Add Ship");
