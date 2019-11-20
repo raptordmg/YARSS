@@ -1,5 +1,3 @@
-package randomShipSelector;
-
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
@@ -11,7 +9,6 @@ import javax.swing.border.EmptyBorder;
 import org.apache.commons.io.FileUtils;
 import org.json.*;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import java.awt.event.MouseAdapter;
@@ -20,77 +17,81 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/*
+ * YARSS(Yet Another Random Ship Selector)
+ * Created by Stephen Wallace using the org.json and commons-io-2.6 libraries
+ * Latest update: 18/04/2019
+ */
+
 @SuppressWarnings({ "serial", "unused" })
 public class RSSAddShip extends JDialog {
-	private JTextField shipName;
+	private JTextField textFieldName;
 	private JComboBox<String> comboBoxTier;
 	private JComboBox<String> comboBoxType;
 	private JComboBox<String> comboBoxNation;
-    private JSONArray ships; //Initialises a JSONArray
+    private JSONArray ships;
 	
-    
     /*
-     * Makes the addships window appear
+     * Makes the add ships menu appear
      */
 	public void display() throws IOException {
-		setVisible(true); //Makes the addships window visible
+		setVisible(true);
 	}
 	
 	/*
 	 * Add ship function
 	 */
 	private void addship() throws IOException {
-		getShips(); //Calls getships()
-		JSONObject ship = new JSONObject(); //Creates a new JSONObject
-		ship.put("Name", shipName.getText()); //Adds fields and values to a JSON
+		getShips();
+		JSONObject ship = new JSONObject();
+		ship.put("Name", textFieldName.getText());
 		ship.put("Tier", comboBoxTier.getSelectedItem());
 		ship.put("Type", comboBoxType.getSelectedItem());
 		ship.put("Nation", comboBoxNation.getSelectedItem());
-		ships.put(ship); //Adds the JSONObject to the JSONArray
-		output(); //Calls output()
+		ships.put(ship);
+		output();
 	}
 	
 	/*
-	 * Outputs the JSON data to a file
+	 * Writes to the JSON file
 	 */
 	private void output() {
 		try {
-			File file = new File("Ships.json"); //Selects the file "Ships.json"
-			FileWriter writeFile = new FileWriter(file); //Writes to the selected file
-			writeFile.write(ships.toString()); 
+			File file = new File("Ships.json");
+			FileWriter writeFile = new FileWriter(file);
+			writeFile.write(ships.toString());
 			writeFile.flush();
-			writeFile.close(); //Closes the file
-			JOptionPane.showMessageDialog(null, "Ship added");
+			writeFile.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	/*
-	 * Reads the data from the Ships.json file
+	 * Reads from the JSON file
 	 */
 	private void getShips() throws IOException {
 		File file = new File("Ships.json");
-		String content = FileUtils.readFileToString(file, "utf-8"); //Reads the data held by the file to a string
-		ships = new JSONArray(content); //Adds the data to the JSONArray
+		String content = FileUtils.readFileToString(file, "utf-8");
+		ships = new JSONArray(content);
 	}
 	
 	/**
 	 * Create the dialog.
 	 */
 	public RSSAddShip() {
-		setTitle("Add Ships"); //Creates the Add Ships window
- 		setBounds(100, 100, 234, 212);
+		setTitle("Add Ships");
+		setBounds(100, 100, 234, 212);
 		getContentPane().setLayout(null);
 		
 		JLabel lblShipName = new JLabel("Ship Name");
 		lblShipName.setBounds(10, 11, 76, 19);
 		getContentPane().add(lblShipName);
 		
-		shipName = new JTextField(); //Creates a text box
-		shipName.setBounds(79, 10, 86, 20);
-		getContentPane().add(shipName);
-		shipName.setColumns(10);
+		textFieldName = new JTextField();
+		textFieldName.setBounds(79, 10, 86, 20);
+		getContentPane().add(textFieldName);
+		textFieldName.setColumns(10);
 		
 		JLabel lblTier = new JLabel("Tier");
 		lblTier.setBounds(10, 43, 46, 14);
@@ -104,9 +105,9 @@ public class RSSAddShip extends JDialog {
 		lblShipNation.setBounds(10, 105, 64, 14);
 		getContentPane().add(lblShipNation);
 		
-		comboBoxTier = new JComboBox<String>(); //Creates a combo box
+		comboBoxTier = new JComboBox<String>();
 		comboBoxTier.setBounds(79, 40, 46, 20);
-		comboBoxTier.addItem("I"); //Adds options to the combo box
+		comboBoxTier.addItem("I");
 		comboBoxTier.addItem("II");
 		comboBoxTier.addItem("III");
 		comboBoxTier.addItem("IV");

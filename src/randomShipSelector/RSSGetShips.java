@@ -1,5 +1,3 @@
-package randomShipSelector;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,6 +9,12 @@ import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/*
+ * YARSS(Yet Another Random Ship Selector)
+ * Created by Stephen Wallace using the org.json and commons-io-2.6 libraries
+ * Latest update: 18/04/2019
+ */
+
 @SuppressWarnings("unused")
 public class RSSGetShips {
 
@@ -20,12 +24,12 @@ public class RSSGetShips {
 	private JSONArray sortedShips2 = new JSONArray();
 
 	/*
-	 * Gets the user's selections and calls the sort functions passing the parameters selected
+	 * Receives the check boxes that the user has selected and sorts the ship data
 	 */
 	public void userSelections(String[] Tiers, String[] Nations, String[] Type) throws IOException {
 		getShips();
 		for (int i = 0; i < Tiers.length; i++) {
-			sortShips(Tiers[i]); //Calls the sortShips function and passes the value of Tiers[i]
+			sortShips(Tiers[i]);
 		}
 		for (int i = 0; i < Nations.length; i++) {
 			sortShipsNation(Nations[i]);
@@ -36,7 +40,7 @@ public class RSSGetShips {
 	}
 	
 	/*
-	 * Reinitialises the sorting JSONArrays
+	 * Reinitialises the ship sorting JSONArrays 
 	 */
 	public void clean() {
 		sortedShips = new JSONArray();
@@ -45,19 +49,19 @@ public class RSSGetShips {
 	}
 	
 	/*
-	 * Sorts ships by tier based on user selections
+	 * Filters the ships by tier
 	 */
-	private void sortShips(String Tier) { 
+	private void sortShips(String Tier) { //if ships json data equals fields from userSelections
 		for (int i = 0; i < ships.length(); i++) {
-			JSONObject currentObject = ships.getJSONObject(i); //Creates a JSONObject from the ships JSONArray
-			if (currentObject.get("Tier").toString().equals(Tier)) { //If the JSONObject's Tier is equal to the string Tier
-				sortedShips.put(currentObject); //Add currentObject to the sortedShips JSONArray
+			JSONObject currentObject = ships.getJSONObject(i);
+			if (currentObject.get("Tier").toString().equals(Tier)) {
+				sortedShips.put(currentObject);
 			}
 		}
 	}
 	
 	/*
-	 * Sorts ships by nation based on user selections
+	 * Filters the ships from the previous stage by nation
 	 */
 	private void sortShipsNation(String Nation) {
 		for (int i = 0; i < sortedShips.length(); i++) {
@@ -69,7 +73,7 @@ public class RSSGetShips {
 	}
 	
 	/*
-	 * Sorts ships by ship type based on user selections
+	 * Filters the ships from the previous stage by type
 	 */
 	private void sortShipType(String Type) {
 		for (int i = 0; i < sortedShips1.length(); i++) {
@@ -80,25 +84,20 @@ public class RSSGetShips {
 		}
 	}
 	
-	/*
-	 * Selects a random item from the JSONArray and returns it's "Name"
+	/* 
+	 * Chooses a random ship from the ships remaining after filtering
 	 */
 	public String getRandomShip() {
-		if (sortedShips2.length() != 0) {
-			Random number = new Random(); //Calls the random number class and assigns it to number
+		Random number = new Random();
+		
+		int n = number.nextInt(sortedShips2.length());
+		JSONObject currentObject = sortedShips2.getJSONObject(n);
 			
-			int n = number.nextInt(sortedShips2.length()); //Creates an integer n and sets it to a random value between 0 and the length of sortedShips2
-			JSONObject currentObject = sortedShips2.getJSONObject(n);
-				
-			return currentObject.getString("Name"); //Returns the Name field from the JSONObject
-		}
-		else {
-			return "Invalid parameters"; //Returns a message if user selects parameters that can't be used
-		}
+		return currentObject.getString("Name");
 	}
 	
 	/*
-	 * Reads the data from the Ships.json file
+	 * Opens the Ships.json and adds the data to a JSONArray
 	 */
 	private void getShips() throws IOException {
 		File file = new File("Ships.json");
